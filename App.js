@@ -3,16 +3,20 @@ import { StyleSheet, View} from "react-native";
 import { useState } from 'react';
 
 import * as ImagePicker from 'expo-image-picker';
-import Button from './assets/components/Button.js'; 
-import ImageViewer from './assets/components/ImageViewer.js';
+import Button from './assets/components/Button'; 
+import ImageViewer from './assets/components/ImageViewer';
 import CircleButton from './assets/components/CircleButton';
 import IconButton from './assets/components/IconButton';
 import EmojiPicker from "./assets/components/EmojiPicker";
+import EmojiList from './assets/components/EmojiList';
+import EmojiSticker from './assets/components/EmojiSticker';
 
 const PlaceholderImage = require("./assets/images/background-image.png");
 
 export default function App() {
-  const [showAppOptions,  setShowAppOptions] = useState(false);
+  const [pickedEmoji, setPickedEmoji] = useState(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [showAppOptions, setShowAppOptions] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const onReset = () => { 
     setShowAppOptions(false); 
@@ -44,15 +48,19 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.imageContainer}>
+      {/* <View style={styles.imageContainer}>
       <ImageViewer
           placeholderImageSource={PlaceholderImage}
           selectedImage={selectedImage}
-        />
+        /> */}
+         <View style={styles.imageContainer}>
+        <ImageViewer placeholderImageSource={PlaceholderImage} selectedImage={selectedImage} />
+        {pickedEmoji && <EmojiSticker imageSize={40} stickerSource={pickedEmoji} />}
       </View>
+      {/* </View> */}
       {/* <View style={styles.footerContainer}>
         <Button theme="primary" label="Choose a photo" onPress={pickImageAsync}/>
-        <Button label="Use this photo" />
+        <Button label="Use this photo" onPress={() => setShowAppOptions(true)} />
       </View> */}
       {showAppOptions ? (
         <View />
@@ -62,11 +70,12 @@ export default function App() {
             <IconButton icon="refresh" label="Reset" onPress={onReset} />
             <CircleButton onPress={onAddSticker} />
             <IconButton icon="save-alt" label="Save" onPress={onSaveImageAsync} />
+            {/* <Button label="Use this photo" onPress={() => setShowAppOptions(true)} /> */}
           </View>
         </View>
       )}
       <EmojiPicker isVisible={isModalVisible} onClose={onModalClose}>
-        {/* A list of emoji component will go here */}
+      <EmojiList onSelect={setPickedEmoji} onCloseModal={onModalClose} />
       </EmojiPicker>
       <StatusBar style="auto" />
     </View>
